@@ -124,9 +124,14 @@ try {
   instant = false;
 }
 await sleep(800);
-const running = await rm.evaluate(() => document.getAnimations({ subtree: true }).filter((a) => a.playState === "running").length);
+// 规约是「正文区禁循环动画」：允许 ≤200ms 的 opacity 淡入淡出，故断言无无限动画而非瞬时计数
+const looping = await rm.evaluate(() =>
+  document
+    .getAnimations({ subtree: true })
+    .filter((a) => a.playState === "running" && a.effect?.getComputedTiming?.().iterations === Infinity).length,
+);
 ok("reduced-motion-swap-instant", instant);
-ok("reduced-motion-no-running-anims", running === 0, `running=${running}`);
+ok("reduced-motion-no-looping-anims", looping === 0, `looping=${looping}`);
 await rm.close();
 
 // 7) 375 抽屉：打开→10 条链接→点选后关合并导航

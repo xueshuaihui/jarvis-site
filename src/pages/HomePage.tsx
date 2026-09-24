@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Nav } from "../components/shell/Nav";
 import { Footer } from "../components/shell/Footer";
+import { DocsSideRail } from "../components/shell/DocsSideRail";
 import { Hero } from "../components/sections/Hero";
 import { Principles } from "../components/sections/Principles";
 import { Workflow } from "../components/sections/Workflow";
@@ -31,6 +32,7 @@ export default function HomePage() {
   return (
     <>
       <Nav />
+      <DocsSideRail />
       <main className="relative">
         <Hero paused={s3Playing} />
         <Principles />
