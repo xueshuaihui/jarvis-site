@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Jarvis Workbench 官网 token（《区块结构与动画设计》§A.1）
+   改色只改这里。全站恒定深色，无浅色形态。
+   ============================================================ */
+@theme {
+  /* 深空三档 */
+  --color-void-0: #04070d;
+  --color-void-1: #0a101c;
+  --color-void-2: #101a2b;
+
+  /* 弧反应堆青 = 系统与 Agent */
+  --color-arc: #3fd9f3;
+  --color-arc-dim: rgba(63, 217, 243, 0.35);
+  --color-arc-faint: rgba(63, 217, 243, 0.12);
+
+  /* repulsor 金 = 人的介入（建任务 / 审核 / 主 CTA） */
+  --color-gold: #f0b64d;
+  --color-gold-dim: rgba(240, 182, 77, 0.4);
+
+  /* 文本三档 */
+  --color-hi: #e8f4f8;
+  --color-mid: #9db3c4;
+  --color-lo: #5a7080;
+
+  /* 状态六色：与工具 DESIGN.md 同色相、提饱和，HUD 描边用 */
+  --color-st-backlog: #8a93a8;
+  --color-st-ready: #4b8df8;
+  --color-st-running: #fbb024;
+  --color-st-review: #9d6bff;
+  --color-st-done: #16cf8f;
+  --color-st-failed: #ff4f4f;
+  --color-st-blocked: #c9974e;
+
+  --font-sans: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+
+  --shadow-glow: 0 0 24px rgba(63, 217, 243, 0.25);
+  --shadow-glow-gold: 0 0 24px rgba(240, 182, 77, 0.25);
+
+  /* L4 环境循环（只动 opacity/transform） */
+  --animate-blink: blink 1s steps(2, start) infinite;
+  --animate-spin-slow: spin 12s linear infinite;
+  --animate-spin-drift: spin 60s linear infinite;
+  --animate-flow: flow 1.6s linear infinite;
+  --animate-breathe-gold: breathe-gold 3s ease-in-out infinite;
+  --animate-breathe-dim: breathe-dim 3s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+@keyframes flow {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 40px 0;
+  }
+}
+@keyframes breathe-gold {
+  0%,
+  100% {
+    box-shadow: 0 0 18px rgba(240, 182, 77, 0.14);
+  }
+  50% {
+    box-shadow: 0 0 26px rgba(240, 182, 77, 0.28);
+  }
+}
+@keyframes breathe-dim {
+  0%,
+  100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-void-0);
+  color: var(--color-hi);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(63, 217, 243, 0.3);
+  color: #fff;
+}
+
+/* 数字/时间/ID 一律等宽数字（继承工具规范） */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* reduced-motion：L4 循环全停；JS 侧动画由 useReducedMotion 降级 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
