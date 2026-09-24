@@ -1,16 +1,18 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { NAV_SECTIONS, LINKS } from "../../content/copy";
 import { easeExit, easeOverlay } from "../../lib/motion";
 import { ReactorLogo } from "../hud/ReactorLogo";
 
 /**
- * 顶栏 HUD Nav：Logo + 4 高频锚点 + 金色主 CTA。
- * 滚动过 Hero 压缩 64→56px 并加深描边；当前区块锚点青色下标 layoutId 滑动；
- * 顶栏下沿 2px 滚动进度光束。窄屏收进 HUD 抽屉（L2 语言）。
+ * 顶栏 HUD Nav：Logo + 4 高频锚点 + 金色主 CTA（一期结构不动，F3 拍板顶栏不加文档项）。
+ * 锚点在 /docs 页自动带上首页路径（跨页回首页定位区块）。
  */
 export function Nav() {
+  const { pathname } = useLocation();
+  const anchor = (id: string) => (pathname === "/" ? `#${id}` : `/#${id}`);
   const [compact, setCompact] = useState(false);
   const [progress, setProgress] = useState(0);
   const [active, setActive] = useState<string>("");
@@ -49,18 +51,18 @@ export function Nav() {
       }`}
     >
       <div className="mx-auto flex h-full max-w-6xl items-center justify-between px-4 md:px-8">
-        <a href="#hero" className="flex items-center gap-3" aria-label="Jarvis Workbench 首页">
+        <Link to="/" className="flex items-center gap-3" aria-label="Jarvis Workbench 首页" onClick={() => window.scrollTo({ top: 0 })}>
           <ReactorLogo size={compact ? 24 : 28} spin />
           <span className="font-mono text-sm font-semibold tracking-[0.25em] text-hi">
             JARVIS<span className="text-arc">·</span>WORKBENCH
           </span>
-        </a>
+        </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="主导航">
           {NAV_SECTIONS.map((s) => (
             <a
               key={s.id}
-              href={`#${s.id}`}
+              href={anchor(s.id)}
               className={`relative px-4 py-2 text-sm transition-colors duration-140 ${
                 active === s.id ? "text-arc" : "text-mid hover:text-hi"
               }`}
@@ -117,7 +119,7 @@ export function Nav() {
               {NAV_SECTIONS.map((s) => (
                 <a
                   key={s.id}
-                  href={`#${s.id}`}
+                  href={anchor(s.id)}
                   onClick={() => setDrawer(false)}
                   className="rounded-lg px-3 py-2.5 text-sm text-mid hover:bg-arc-faint hover:text-arc"
                 >

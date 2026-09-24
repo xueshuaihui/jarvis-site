@@ -1,39 +1,49 @@
-import { useCallback, useState } from "react";
+import { lazy, Suspense } from "react";
+import { Route, Routes, Navigate } from "react-router-dom";
 import { Backdrop } from "./components/shell/Backdrop";
-import { Nav } from "./components/shell/Nav";
-import { Footer } from "./components/shell/Footer";
-import { Hero } from "./components/sections/Hero";
-import { Principles } from "./components/sections/Principles";
-import { Workflow } from "./components/sections/Workflow";
-import { Modules } from "./components/sections/Modules";
-import { QuickStart } from "./components/sections/QuickStart";
-import { LocalFirst } from "./components/sections/LocalFirst";
-import { Download } from "./components/sections/Download";
-import { Faq } from "./components/sections/Faq";
+import HomePage from "./pages/HomePage";
 
-/**
- * 单页叙事流：唤醒(Hero) → 铁律 → 旅程(状态机) → 座舱(模块) → 开机(上手) → 本地 → 下载 → FAQ。
- * 同屏编排互斥：S3 播放器播放时，Hero 常驻循环暂停。
- */
+/** 文档区整体路由级分包（含 DocsLayout 与 Hub）：首页 bundle 不回退（设计稿 F1/§5） */
+const DocsLayout = lazy(() => import("./components/shell/DocsLayout"));
+const DocsHubPage = lazy(() => import("./pages/docs/DocsHubPage"));
+const InstallPage = lazy(() => import("./pages/docs/InstallPage"));
+const ConceptsPage = lazy(() => import("./pages/docs/ConceptsPage"));
+const BoardPage = lazy(() => import("./pages/docs/BoardPage"));
+const ReviewPage = lazy(() => import("./pages/docs/ReviewPage"));
+const SkillsPage = lazy(() => import("./pages/docs/SkillsPage"));
+const OrgPage = lazy(() => import("./pages/docs/OrgPage"));
+const AgentPage = lazy(() => import("./pages/docs/AgentPage"));
+const DataPage = lazy(() => import("./pages/docs/DataPage"));
+const ChangelogPage = lazy(() => import("./pages/docs/ChangelogPage"));
+
 export default function App() {
-  const [s3Playing, setS3Playing] = useState(false);
-  const onPlayingChange = useCallback((p: boolean) => setS3Playing(p), []);
-
   return (
     <>
       <Backdrop />
-      <Nav />
-      <main className="relative">
-        <Hero paused={s3Playing} />
-        <Principles />
-        <Workflow onPlayingChange={onPlayingChange} />
-        <Modules />
-        <QuickStart />
-        <LocalFirst />
-        <Download />
-        <Faq />
-      </main>
-      <Footer />
+      <Suspense
+        fallback={
+          <div className="relative z-10 flex h-screen items-center justify-center font-mono text-xs text-arc/70">
+            // LOADING▌
+          </div>
+        }
+      >
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/docs" element={<DocsLayout />}>
+            <Route index element={<DocsHubPage />} />
+            <Route path="install" element={<InstallPage />} />
+            <Route path="concepts" element={<ConceptsPage />} />
+            <Route path="board" element={<BoardPage />} />
+            <Route path="review" element={<ReviewPage />} />
+            <Route path="skills" element={<SkillsPage />} />
+            <Route path="org" element={<OrgPage />} />
+            <Route path="agent" element={<AgentPage />} />
+            <Route path="data" element={<DataPage />} />
+            <Route path="changelog" element={<ChangelogPage />} />
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </>
   );
 }

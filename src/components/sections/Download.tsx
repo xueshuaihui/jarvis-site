@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "motion/react";
-import { Cpu, DownloadCloud } from "lucide-react";
+import { BookOpen, Cpu, DownloadCloud } from "lucide-react";
+import { Link } from "react-router-dom";
 import { DOWNLOAD, LINKS } from "../../content/copy";
 import { itemVariants, listVariants } from "../../lib/motion";
 import { PanelTitle } from "../hud/PanelTitle";
@@ -72,6 +73,22 @@ export function Download() {
       </div>
 
       <div className="mt-10 flex flex-col items-center gap-6">
+        {/* F3 拍板：首页 → 文档区入口卡（顶栏不加项） */}
+        <Link
+          to="/docs"
+          className="group flex w-full max-w-2xl items-center justify-between gap-4 rounded-xl border border-arc-dim/40 bg-void-1/60 px-6 py-4 text-left transition-[border-color,box-shadow] duration-140 hover:border-arc/60 hover:shadow-glow"
+        >
+          <div className="flex items-center gap-4">
+            <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-arc-dim/40 text-arc">
+              <BookOpen size={18} strokeWidth={1.6} />
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-hi">操作手册 · Field Manual</p>
+              <p className="mt-0.5 text-xs text-mid">安装起步、看板与审核、技能工作台、Agent 接入与 26 工具参考、数据安全与排查</p>
+            </div>
+          </div>
+          <span className="shrink-0 font-mono text-xs text-lo transition-colors duration-140 group-hover:text-arc">9 章 →</span>
+        </Link>
         <a
           href={LINKS.releasesLatest}
           target="_blank"

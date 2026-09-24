@@ -81,7 +81,7 @@ export function SketchAgent() {
       <p className="text-arc">▸ complete_task · begin_breakdown</p>
       <p className="text-gold">▸ create_task <span className="text-lo">// 唤醒词「贾维斯，…」</span></p>
       <p className="mt-2 text-mid">
-        25 tools · lease 30min <span className="animate-blink">▌</span>
+        26 tools · lease 30min <span className="animate-blink">▌</span>
       </p>
     </div>
   );

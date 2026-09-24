@@ -2,6 +2,7 @@
    全站文案与事实中枢（《网站架构设计》§2 内容事实基线）
    每条事实均有仓库出处；改文案只改这里。禁止虚构能力。
    ============================================================ */
+import { RELEASE_BADGE } from "./docs-nav";
 
 export const LINKS = {
   /** 统一指向 latest，避免版本号写死过期 */
@@ -10,8 +11,8 @@ export const LINKS = {
   repo: "https://github.com/xueshuaihui/agent-task-board",
 };
 
-/** 版本徽章：读自内容常量（来源：v0.0.4-beta.6 发布记录，2026-09-24） */
-export const LATEST_BADGE = "v0.0.4-beta.6 · macOS · prerelease 通道";
+/** 版本徽章：版本号唯一事实源是 docs-nav 的 RELEASE_BADGE（来源：v0.0.4-beta.6 发布记录，2026-09-24） */
+export const LATEST_BADGE = `${RELEASE_BADGE} · macOS · prerelease 通道`;
 
 export const NAV_SECTIONS = [
   { id: "workflow", label: "工作流" },
@@ -150,8 +151,8 @@ export const MODULES = [
   {
     key: "agent",
     title: "Agent 接入",
-    body: "设置里签发 Agent Token，配上 MCP 地址，你的 AI 助手即刻上岗：25 个 MCP 工具覆盖认领、心跳、回写、拆解全流程。",
-    bullets: ["MCP 25 工具 + REST 通道", "Token 分组：UI 与 Agent 互不可越", "唤醒词「贾维斯，…」或定时认领"],
+    body: "设置里签发 Agent Token，配上 MCP 地址，你的 AI 助手即刻上岗：26 个 MCP 工具覆盖认领、心跳、回写、拆解全流程。",
+    bullets: ["MCP 26 工具 + REST 通道", "Token 分组：UI 与 Agent 互不可越", "唤醒词「贾维斯，…」或定时认领"],
   },
   {
     key: "settings",
