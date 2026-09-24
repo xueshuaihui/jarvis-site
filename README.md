@@ -3,7 +3,8 @@
 Jarvis Workbench（贾维斯客户端）的产品介绍 + 操作手册官网。**独立项目**，与主仓库 `agent-task-board` 无代码依赖；内容事实以主仓库文档为准（口径清单见 `docs/网站架构设计.md` §2、`docs/二级页面架构与内容设计.md` §2）。
 
 - 视觉：钢铁侠 JARVIS 科幻风（深空底 / 弧反应堆青 = 系统与 Agent / repulsor 金 = 人的介入）
-- 形态：react-router SPA——单页九区块 Landing（`/`）+ 文档区 10 页（`/docs` Hub + 9 专题，含 Changelog）
+- 形态：react-router SPA——单页九区块 Landing（`/`，左缘含常驻文档侧栏 `DocsSideRail`）+ 文档区 10 页（`/docs` Hub + 9 专题，含 Changelog）
+- 仓库：`https://github.com/xueshuaihui/jarvis-site`（public，main）；部署宿主待拍板，见「约定」的 SPA fallback 一条
 - 设计稿：`docs/网站架构设计.md`、`docs/区块结构与动画设计.md`、`docs/二级页面架构与内容设计.md`（各含评审拍板记录）
 
 ## 命令
