@@ -69,7 +69,8 @@ export default function InstallPage() {
         </Callout>
         <P>
           Windows 首启：安装包未签名，首次运行会弹 SmartScreen 蓝框「Windows 已保护你的电脑 / 未知发布者」——
-          点「<strong className="text-hi">更多信息</strong>」→「<strong className="text-hi">仍要运行</strong>」放行，仅需确认这一次。
+          点「<strong className="text-hi">更多信息</strong>」→「<strong className="text-hi">仍要运行</strong>」放行；
+          <strong className="text-hi">重装或换机每次都会再弹一次</strong>（未签名所致，非缺陷）。
           无需（也不建议）为此关闭 Defender 或 SmartScreen。
         </P>
       </Section>
