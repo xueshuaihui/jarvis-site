@@ -7,7 +7,7 @@ import { mkdirSync } from "node:fs";
 import puppeteer from "puppeteer-core";
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const BASE = process.env.ATB_SITE_URL ?? "http://localhost:4390/";
+const BASE = process.env.ATB_SITE_URL ?? "http://localhost:4390/jarvis-site/";
 const OUT = process.argv[2] ?? "/tmp/jarvis-shots";
 const PAGES = ["", "install", "concepts", "board", "review", "skills", "org", "agent", "data", "changelog"];
 const ALL_VP_PAGES = ["", "concepts", "agent", "data"]; // 全档复验页：Hub / 矩阵招牌件 / 最长工具页 / 表格页
@@ -46,7 +46,7 @@ await page.goto(`${BASE}docs/concepts`, { waitUntil: "networkidle0" });
 await new Promise((r) => setTimeout(r, 900));
 await page.evaluate(() => {
   const t = [...document.querySelectorAll("main table")].find((x) => x.querySelector("th")?.textContent.includes("从"));
-  t.scrollIntoView({ block: "center" });
+  t.scrollIntoView({ block: "center", behavior: "instant" });
 });
 await new Promise((r) => setTimeout(r, 300));
 const cell = await page.evaluateHandle(() => {

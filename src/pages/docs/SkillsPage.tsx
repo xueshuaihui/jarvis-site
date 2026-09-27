@@ -29,7 +29,7 @@ export default function SkillsPage() {
         />
         <Callout tone="info" title="身份与命名">
           <p>
-            技能允许重名——身份由唯一 id 决定并随导出/导入持久；导入冲突按「同 ID」判定。{FACTS.skillCategories} 类单值分类 + 自由标签共同支撑检索。
+            技能允许重名——身份由唯一 id 决定并随导出/导入持久；导入冲突按「同 ID」判定。两级分类（{FACTS.skillCategoryGroups} 个一级 / {FACTS.skillCategories} 个叶子）+ 自由标签共同支撑检索。
           </p>
         </Callout>
       </Section>

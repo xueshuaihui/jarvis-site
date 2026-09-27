@@ -3,7 +3,7 @@ import { MCP_TOOL_GROUPS, FACTS } from "../../content/manual";
 import { RELEASE_BADGE } from "../../content/docs-nav";
 
 /**
- * MCP 工具参考表：26 工具分三组，顶部单行本地过滤（空白切词 AND、子序列兜底）。
+ * MCP 工具参考表：28 工具分三组，顶部单行本地过滤（空白切词 AND、子序列兜底）。
  * 行：名称 mono + 作用 + 等价 REST（无则 —）。
  */
 function hit(query: string, text: string) {

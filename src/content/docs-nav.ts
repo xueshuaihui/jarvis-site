@@ -22,7 +22,7 @@ export const DOC_PAGES: DocPageMeta[] = [
     no: "01",
     title: "安装与起步",
     kicker: "BOOT SEQUENCE",
-    summary: "双架构 dmg 选包、Gatekeeper 首启解除、升级注意与端口口径。",
+    summary: "macOS 双架构 dmg 与 Windows x64 安装包选包、首启拦截（Gatekeeper / SmartScreen）解除、升级注意与端口口径。",
     basis: "依据：系统操作使用手册 §2",
     toc: [
       { id: "sys-req", label: "系统与分发形态" },
@@ -84,7 +84,7 @@ export const DOC_PAGES: DocPageMeta[] = [
     no: "05",
     title: "技能工作台",
     kicker: "SKILL FORGE",
-    summary: "三来源与 94 条内置、七类型 15 块、四种编辑模式、导入导出与任务绑定。",
+    summary: "三来源与 125 条内置、七类型 15 块、两级分类（7 个一级 / 16 个叶子）、四种编辑模式、导入导出与任务绑定。",
     basis: "依据：系统操作使用手册 §3.8、§4.10",
     toc: [
       { id: "sources", label: "技能的三个来源" },
@@ -115,14 +115,14 @@ export const DOC_PAGES: DocPageMeta[] = [
     no: "07",
     title: "Agent 接入",
     kicker: "UPLINK PROTOCOL",
-    summary: "签发 Token、MCP 端点与 26 工具参考、执行闭环、唤醒词协议、创建模版速查。",
+    summary: "签发 Token、MCP 端点与 28 工具参考、执行闭环、唤醒词协议、创建模版速查。",
     basis: "依据：系统操作使用手册 §5；任务创建模版（Agent 协助）",
     toc: [
       { id: "token", label: "第一步：签发 Agent Token" },
       { id: "endpoint", label: "MCP 端点与配置" },
       { id: "wake", label: "贾维斯唤醒词" },
       { id: "loop", label: "执行闭环七步" },
-      { id: "tools", label: "MCP 工具参考（26）" },
+      { id: "tools", label: "MCP 工具参考（28）" },
       { id: "rest", label: "REST 等价接口" },
       { id: "template", label: "任务创建模版速查" },
       { id: "cursor", label: "Cursor 定时调度" },
@@ -164,7 +164,7 @@ export function docPage(slug: string): DocPageMeta | undefined {
 }
 
 
-export const RELEASE_BADGE = "v0.0.4-beta.6";
+export const RELEASE_BADGE = "v0.0.4-beta.8";
 
 export const HUB_PATHS = [
   { title: "装好并打开", to: "/docs/install", what: "选对架构、解开 Gatekeeper、五分钟进工作台" },

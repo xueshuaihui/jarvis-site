@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { docPage } from "../../content/docs-nav";
+import { docPage, RELEASE_BADGE } from "../../content/docs-nav";
 import { FACTS } from "../../content/manual";
 import { LINKS } from "../../content/copy";
 import { PageHeader, Section, P, UL, Code } from "../../components/prose/primitives";
@@ -17,25 +17,28 @@ export default function InstallPage() {
 
       <Section id="sys-req" title="系统与分发形态">
         <P>
-          Jarvis Workbench 是 <strong className="text-hi">macOS 原生桌面应用</strong>（Tauri 2 壳 + 本地 sidecar），
-          业务数据全部存于本机 <Code>{FACTS.dataDir}</Code>，不依赖任何远端服务——断网可用。
-          Windows / Linux 尚未交付（Coming later）。
+          Jarvis Workbench 是 <strong className="text-hi">macOS / Windows 原生桌面应用</strong>（Tauri 2 壳 + 本地 sidecar），
+          业务数据全部存于本机，不依赖任何远端服务——断网可用。
+          Windows 当前仅 x64；Linux 尚未交付（Coming later）。
         </P>
         <UL
           items={[
-            "发布形态：GitHub Releases 上的 .dmg，双架构各一份（arm64 原生 / x64 原生），随附 SHA256SUMS.txt。",
-            "签名状态：ad-hoc 签名、未公证——首次打开被 Gatekeeper 拦截属预期，见下文解除方式。",
-            "通道：v0.0.x 全部为 prerelease 验证通道（至今无正式版），核心链路已按清单真机验收。",
+            "发布形态：GitHub Releases 上 macOS .dmg 双架构各一份（arm64 原生 / x64 原生）+ Windows x64 NSIS 安装包（.exe），随附 SHA256SUMS.txt。",
+            "签名状态：macOS 为 ad-hoc 签名、未公证——首次打开被 Gatekeeper 拦截属预期；Windows 未签名——首启出现 SmartScreen 蓝框属预期。两种拦截的放行方式见下文，无需关闭系统防护。",
+            "通道：v0.0.x 全部为 prerelease 验证通道（至今无正式版），macOS 核心链路已按清单真机验收；Windows 包自 v0.0.4-beta.8 起出包，真机安装验证仍在进行中。",
           ]}
         />
         <Callout tone="info" title="去哪下载">
           <p>
-            统一入口：<a href={LINKS.releasesLatest} target="_blank" rel="noreferrer" className="text-arc underline decoration-arc/40">GitHub Releases（latest）</a>。按机器架构选包：Apple Silicon 用 arm64，不需要 Rosetta；2020 年前 Intel 机型用 x64。
+            统一入口：<a href={LINKS.releasesLatest} target="_blank" rel="noreferrer" className="text-arc underline decoration-arc/40">GitHub Releases（latest）</a>，
+            当前批次：<a href={LINKS.releaseTag} target="_blank" rel="noreferrer" className="text-arc underline decoration-arc/40">{RELEASE_BADGE}</a>。
+            按机器选包：Apple Silicon 用 <Code>Jarvis.Workbench_0.1.0_arm64.dmg</Code>（不需要 Rosetta）；2020 年前 Intel 机型用 <Code>Jarvis.Workbench_0.1.0_x64.dmg</Code>；Windows 10 / 11 x64 用 <Code>Jarvis.Workbench_0.1.0_x64-setup.exe</Code>。
           </p>
         </Callout>
       </Section>
 
       <Section id="install-steps" title="安装四步">
+        <P>macOS（.dmg）：</P>
         <StepsBlock
           items={[
             { title: "下载对应架构的 .dmg", body: <p>双架构包同名不同后缀（_arm64 / _x64），拿不准就在「关于本机」看芯片。建议顺手校验 SHA256SUMS。</p> },
@@ -44,6 +47,12 @@ export default function InstallPage() {
             { title: "打开即工作台", body: <p>没有注册、没有登录——本机单用户，左侧导航五页（看板 / 分组 / 技能 / 审核 / 设置）直接可用。</p> },
           ]}
         />
+        <P>
+          Windows（.exe，仅 x64，自 {RELEASE_BADGE} 批次起提供）：双击 <Code>Jarvis.Workbench_0.1.0_x64-setup.exe</Code> 安装即可——
+          per-user 安装、不弹 UAC，默认装入 <Code>%LOCALAPPDATA%\Jarvis Workbench</Code>；<strong className="text-hi">安装时需要联网</strong>，
+          安装器会拉取 WebView2 Evergreen 运行库（Win11 与更新过的 Win10 通常已自带；Windows N 版 / LTSC / Server Core 上没有，需保证联网或预装）。
+          Windows 上数据目录为 <Code>%APPDATA%\jarvis-workbench</Code>（<Code>ATB_DATA_DIR</Code> 可覆盖），日志独立于数据、落在 <Code>%APPDATA%\AgentTaskBoard\logs</Code>。
+        </P>
       </Section>
 
       <Section id="gatekeeper" title="首次启动被拦截">
@@ -58,6 +67,11 @@ export default function InstallPage() {
         <Callout tone="warn" title="若提示「已损坏」">
           <p>Apple Silicon 上双击判「已损坏，无法打开」多见于零签名的早期包——升级到最新 beta 包即可，新包已修复该判定。</p>
         </Callout>
+        <P>
+          Windows 首启：安装包未签名，首次运行会弹 SmartScreen 蓝框「Windows 已保护你的电脑 / 未知发布者」——
+          点「<strong className="text-hi">更多信息</strong>」→「<strong className="text-hi">仍要运行</strong>」放行，仅需确认这一次。
+          无需（也不建议）为此关闭 Defender 或 SmartScreen。
+        </P>
       </Section>
 
       <Section id="upgrade" title="升级与旧数据">

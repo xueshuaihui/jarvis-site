@@ -6,8 +6,8 @@ import { itemVariants, listVariants } from "../../lib/motion";
 import { PanelTitle } from "../hud/PanelTitle";
 
 /**
- * S7 下载：双架构卡 + beta 通道小字须知。
- * 首次入视：两卡背后弧光展开一次；主按钮常驻极缓金色呼吸（全站唯一常驻 CTA 动效）。
+ * S7 下载：macOS 双架构 + Windows x64 卡 + beta 通道小字须知。
+ * 首次入视：卡片背后弧光展开一次；主按钮常驻极缓金色呼吸（全站唯一常驻 CTA 动效）。
  */
 export function Download() {
   const reduce = useReducedMotion();
@@ -65,7 +65,7 @@ export function Download() {
                 </div>
               </div>
               <div className="hidden text-left md:block">
-                <p className="font-mono text-[11px] text-lo">.dmg + SHA256SUMS</p>
+                <p className="font-mono text-[11px] text-lo">{c.files}</p>
               </div>
             </motion.div>
           ))}
@@ -84,7 +84,7 @@ export function Download() {
             </span>
             <div>
               <p className="text-sm font-semibold text-hi">操作手册 · Field Manual</p>
-              <p className="mt-0.5 text-xs text-mid">安装起步、看板与审核、技能工作台、Agent 接入与 26 工具参考、数据安全与排查</p>
+              <p className="mt-0.5 text-xs text-mid">安装起步、看板与审核、技能工作台、Agent 接入与 28 工具参考、数据安全与排查</p>
             </div>
           </div>
           <span className="shrink-0 font-mono text-xs text-lo transition-colors duration-140 group-hover:text-arc">9 章 →</span>

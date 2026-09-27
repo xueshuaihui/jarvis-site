@@ -25,7 +25,7 @@ import { ToolRefTable } from "../../components/prose/ToolRefTable";
 
 const meta = docPage("agent")!;
 
-/** /docs/agent Agent 接入（手册 §5 + 任务创建模版）：26 工具参考表是本页招牌件 */
+/** /docs/agent Agent 接入（手册 §5 + 任务创建模版）：28 工具参考表是本页招牌件 */
 export default function AgentPage() {
   return (
     <div>

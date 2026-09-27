@@ -3,7 +3,7 @@
    所有页面结构与数字事实集中于此，页组件不写字面数字。
    出处：agent-task-board《系统操作使用手册》§n（下称 M）、
    《任务创建模版（Agent 协助）》（T）、发版记录/tag 注记（R）。
-   事实口径锁 v0.0.4-beta.6；未随该版发布的能力（update_task/update_skill 等）不得出现。
+   事实口径锁 v0.0.4-beta.8；update_task/update_skill 已随 beta.7 发布，工具面必须收录。
    ============================================================ */
 
 /* ---------------- 通用事实数字 ---------------- */
@@ -11,11 +11,12 @@
 export const FACTS = {
   mcpPort: 7788,
   mcpEndpoint: "http://127.0.0.1:7788/mcp",
-  toolCount: 26,
-  defaultSkills: 94,
+  toolCount: 28,
+  defaultSkills: 125,
   skillTypes: 7,
   blockKinds: 15,
-  skillCategories: 12,
+  skillCategories: 16,
+  skillCategoryGroups: 7,
   leaseTtlDefault: 30,
   heartbeatDefault: 300,
   artifactMaxMb: 20,
@@ -396,17 +397,19 @@ export const MCP_TOOL_GROUPS: { title: string; note: string; tools: McpTool[] }[
       { name: "fail_task", what: "失败上报 → 异常", rest: "POST /api/v1/tasks/:id/fail" },
       { name: "heartbeat", what: "续租", rest: "POST /api/v1/tasks/:id/heartbeat" },
       { name: "get_review_feedback", what: "最近审核意见", rest: "GET /api/v1/tasks/:id/review-feedback" },
+      { name: "update_task", what: "全字段 PATCH 编辑任务，只改提交了的字段；RUNNING 需租约三元组，BACKLOG/READY 免租约，终态不可编辑", rest: "PATCH /api/v1/tasks/:id" },
     ],
   },
   {
     title: "阻塞 · 技能 · 策略 · 词表",
-    note: "人工块、技能只读面与自纠错",
+    note: "人工块、技能读写面与自纠错",
     tools: [
       { name: "block_task", what: "人工块上报 → BLOCKED（与 REST 双入口）", rest: "POST /api/v1/tasks/:id/blocked" },
       { name: "wait_for_resume", what: "阻塞等待人工解除 BLOCKED", rest: null },
       { name: "list_skills", what: "技能列表（只读）", rest: "GET /api/v1/skills" },
       { name: "get_skill", what: "技能详情与正文", rest: "GET /api/v1/skills/:id" },
       { name: "search_skills", what: "技能检索", rest: null },
+      { name: "update_skill", what: "全字段 PATCH 编辑技能（内置默认技能只读，回 SKILL_READONLY）；content/tags/test_cases 整体覆盖", rest: "PATCH /api/v1/skills/:id" },
       { name: "check_mcp_policy", what: "MCP 依赖策略校验", rest: null },
       { name: "report_mcp_call", what: "MCP 调用审计上报", rest: null },
       { name: "get_vocabulary", what: "一次拿全服务端词表（类型/优先级/状态机/技能口径/产物枚举），杜绝试错造数据", rest: null },
@@ -574,15 +577,38 @@ export const CHANGELOG: {
   current?: boolean;
 }[] = [
   {
+    version: "v0.0.4-beta.8",
+    date: "2026-09-28",
+    channel: "prerelease",
+    current: true,
+    headline: "Windows x64 安装包首批上线",
+    points: [
+      "新增 Windows x64 NSIS 安装包（.exe）：未签名，首启按 SmartScreen 提示「更多信息 → 仍要运行」放行；per-user 安装、不需管理员权限",
+      "安装时需联网下载 WebView2 运行库（Win11 与更新过的 Win10 通常已自带）",
+      "macOS 侧无功能改动；Windows 真机双击安装验证仍在进行中",
+    ],
+  },
+  {
+    version: "v0.0.4-beta.7",
+    date: "2026-09-25",
+    channel: "prerelease",
+    headline: "Agent 编辑面扩展 + 技能库扩容与分类两级化",
+    points: [
+      "MCP 新增 update_task、update_skill 两个工具，tools/list 由 26 升至 28",
+      "内置技能 94 → 125：新收录 31 条编码技能",
+      "技能分类改为两级树：7 个一级 / 16 个叶子",
+      "任务列表列宽不再随筛选跳变",
+    ],
+  },
+  {
     version: "v0.0.4-beta.6",
     date: "2026-09-24",
     channel: "prerelease",
-    current: true,
     headline: "审核与接入细节修复 + 分组过滤重构",
     points: [
       "B12→B15：分组呈现重构，过滤统一（分段选择器 + chip，看板 7 列恒在与过滤解耦）",
       "B8–B11 修复批：审核产物归属标注、Agent 接入状态 chip 相对时间等",
-      "MCP 面 tools/list 共 26 工具；任务列表列宽与滚动解耦",
+      "MCP 面 tools/list 工具 26 个；任务列表列宽与滚动解耦",
     ],
   },
   {

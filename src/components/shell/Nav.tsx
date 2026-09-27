@@ -132,7 +132,7 @@ export function Nav() {
                 rel="noreferrer"
                 className="mt-2 rounded-lg bg-gold px-3 py-2.5 text-center text-sm font-semibold text-void-0"
               >
-                下载 for macOS
+                下载 macOS / Windows 版
               </a>
             </div>
           </motion.nav>

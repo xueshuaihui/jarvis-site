@@ -8,11 +8,13 @@ export const LINKS = {
   /** 统一指向 latest，避免版本号写死过期 */
   releasesLatest: "https://github.com/xueshuaihui/agent-task-board/releases/latest",
   releases: "https://github.com/xueshuaihui/agent-task-board/releases",
+  /** 当前批次直达链接：版本源是 RELEASE_BADGE，此处拼接保持单一口径 */
+  releaseTag: `https://github.com/xueshuaihui/agent-task-board/releases/tag/${RELEASE_BADGE}`,
   repo: "https://github.com/xueshuaihui/agent-task-board",
 };
 
-/** 版本徽章：版本号唯一事实源是 docs-nav 的 RELEASE_BADGE（来源：v0.0.4-beta.6 发布记录，2026-09-24） */
-export const LATEST_BADGE = `${RELEASE_BADGE} · macOS · prerelease 通道`;
+/** 版本徽章：版本号唯一事实源是 docs-nav 的 RELEASE_BADGE（来源：v0.0.4-beta.8 发布记录，2026-09-28） */
+export const LATEST_BADGE = `${RELEASE_BADGE} · macOS + Windows x64 · prerelease 通道`;
 
 export const NAV_SECTIONS = [
   { id: "workflow", label: "工作流" },
@@ -28,7 +30,7 @@ export const HERO = {
   h1Accent: "需要一块真正的看板。",
   typed: "「贾维斯，把需求拆解后交给 Agent 执行。」",
   lede: "Jarvis Workbench（贾维斯客户端）是一块纯本地桌面任务看板：人建任务，Agent 经 MCP / REST 认领执行，一切产出必经人工审核才生效。",
-  ctaMain: "下载 for macOS",
+  ctaMain: "下载 macOS / Windows 版",
   ctaGhost: "看它怎么转 ↓",
   finePrint: "支持 Apple Silicon / Intel · 仅本机运行，数据不出电脑",
   board: {
@@ -145,14 +147,14 @@ export const MODULES = [
   {
     key: "skills",
     title: "技能库",
-    body: "预置 94 条内置技能开箱即用，支持自定义与三方导入（.atskill / SKILL.md / .mdc），12 类分类统一检索。",
-    bullets: ["94 条内置技能随包发布", "三来源：内置 / 自定义 / 导入", "任务绑定技能，随单下发"],
+    body: "预置 125 条内置技能开箱即用，支持自定义与三方导入（.atskill / SKILL.md / .mdc），两级分类（7 个一级 / 16 个叶子）统一检索。",
+    bullets: ["125 条内置技能随包发布", "三来源：内置 / 自定义 / 导入", "任务绑定技能，随单下发"],
   },
   {
     key: "agent",
     title: "Agent 接入",
-    body: "设置里签发 Agent Token，配上 MCP 地址，你的 AI 助手即刻上岗：26 个 MCP 工具覆盖认领、心跳、回写、拆解全流程。",
-    bullets: ["MCP 26 工具 + REST 通道", "Token 分组：UI 与 Agent 互不可越", "唤醒词「贾维斯，…」或定时认领"],
+    body: "设置里签发 Agent Token，配上 MCP 地址，你的 AI 助手即刻上岗：28 个 MCP 工具覆盖认领、心跳、回写、编辑、拆解全流程。",
+    bullets: ["MCP 28 工具 + REST 通道", "Token 分组：UI 与 Agent 互不可越", "唤醒词「贾维斯，…」或定时认领"],
   },
   {
     key: "settings",
@@ -227,19 +229,28 @@ export const DOWNLOAD = {
       chip: "arm64",
       models: "M 系列机型",
       note: "原生构建，无需 Rosetta",
+      files: "Jarvis.Workbench_0.1.0_arm64.dmg",
     },
     {
       name: "Intel",
       chip: "x64",
       models: "2020 年前机型",
       note: "x86_64 原生包",
+      files: "Jarvis.Workbench_0.1.0_x64.dmg",
+    },
+    {
+      name: "Windows",
+      chip: "x64",
+      models: "Windows 10 / 11（仅 x64）",
+      note: "NSIS 安装包 · 未签名，首启按 SmartScreen 提示放行",
+      files: "Jarvis.Workbench_0.1.0_x64-setup.exe",
     },
   ],
   cta: "前往 GitHub Releases 下载",
   finePrint: [
     "每个版本附带 SHA256SUMS.txt，建议下载后校验；GitHub 上传后文件名中的空格变为点号属正常。",
     "当前为 beta 验证通道：核心工作流已可用，仍在真机验收迭代中；升级新版本前建议先删除旧版 .app。",
-    "Windows / Linux 尚未交付（Coming later）。本站下载链接均指向官方 GitHub Releases。",
+    "Windows 包为未签名 prerelease：首启出现 SmartScreen 蓝框属预期，点「更多信息」→「仍要运行」即可；per-user 安装不需管理员权限，安装时需联网获取 WebView2 运行库。Linux 尚未交付（Coming later）。本站下载链接均指向官方 GitHub Releases。",
   ],
 };
 
@@ -269,8 +280,8 @@ export const FAQ = {
       a: "统一在 ~/.jarvis-workbench/（早期版本目录名为 ~/.agent-board，升级首启会自动搬迁）。设置 → 备份/数据 里可导出导入；换机时拷走整个目录即可完整迁移。",
     },
     {
-      q: "Windows / Linux 版本什么时候有？",
-      a: "尚未列入已交付清单，当前仅 macOS 双架构。跨平台属阶段二规划，请关注仓库 Releases。",
+      q: "有 Windows 版本吗？",
+      a: "Windows x64 安装包已随 v0.0.4-beta.8 起在 prerelease 通道出包（NSIS .exe，未签名）：首次启动会出现 SmartScreen 蓝框，点「更多信息」→「仍要运行」放行；per-user 安装、不弹 UAC，安装时需联网下载 WebView2 运行库（Win11 / 更新过的 Win10 通常已自带）。真机安装验证仍在进行中，暂仅提供 x64；Linux 尚未列入交付清单，请关注仓库 Releases。",
     },
     {
       q: "收费吗？",

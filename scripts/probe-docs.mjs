@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-/** 文档区交互回归探针（设计稿 §7）：路由渲染 / 互链 / 矩阵 hover / 工具过滤 / 抽屉 / reduced-motion / 26 工具口径 */
+/** 文档区交互回归探针（设计稿 §7）：路由渲染 / 互链 / 矩阵 hover / 工具过滤 / 抽屉 / reduced-motion / 28 工具口径 */
 import puppeteer from "puppeteer-core";
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
-const BASE = process.env.ATB_SITE_URL ?? "http://localhost:4390/";
+const BASE = process.env.ATB_SITE_URL ?? "http://localhost:4390/jarvis-site/";
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const results = [];
 const ok = (name, pass, extra = "") => results.push(`${pass ? "PASS" : "FAIL"} ${name}${extra ? " · " + extra : ""}`);
@@ -32,10 +32,12 @@ for (const s of SLUGS) {
 // 2) 首页互链：Download 区「操作手册」入口卡 → /docs
 await page.goto(BASE, { waitUntil: "networkidle0" });
 await sleep(1200);
-await page.evaluate(() => document.querySelector('#download a[href="/docs"]').scrollIntoView());
+// GitHub Pages 基路径（/jarvis-site/）下用后缀匹配，不断言站点挂在根路径
+const ENTRY_SEL = '#download a[href$="/docs"]';
+await page.evaluate((sel) => document.querySelector(sel).scrollIntoView(), ENTRY_SEL);
 await sleep(500);
-await page.evaluate(() => document.querySelector('#download a[href="/docs"]').click());
-await page.waitForFunction(() => location.pathname === "/docs", { timeout: 5000 });
+await page.evaluate((sel) => document.querySelector(sel).click(), ENTRY_SEL);
+await page.waitForFunction(() => location.pathname.endsWith("/docs"), { timeout: 5000 });
 ok("home-entry-card-to-docs", page.url().endsWith("/docs"));
 
 // 3) 侧栏 rail：点「Agent 接入」→ URL 与 active 状态切换
@@ -43,14 +45,14 @@ await page.evaluate(() => {
   const link = [...document.querySelectorAll("aside nav a")].find((a) => a.textContent.includes("Agent"));
   link.click();
 });
-await page.waitForFunction(() => location.pathname === "/docs/agent", { timeout: 5000 });
+await page.waitForFunction(() => location.pathname.endsWith("/docs/agent"), { timeout: 5000 });
 await sleep(600);
 const railActive = await page.evaluate(() => {
   const links = [...document.querySelectorAll("aside nav a")];
   const act = links.filter((a) => a.getAttribute("aria-current") || a.className.includes("gold"));
   return { total: links.length, active: act.map((a) => a.getAttribute("href")) };
 });
-ok("rail-nav-to-agent", railActive.active.includes("/docs/agent"), `links=${railActive.total}`);
+ok("rail-nav-to-agent", railActive.active.some((h) => h && h.endsWith("/docs/agent")), `links=${railActive.total}`);
 
 // 4) 矩阵：表头「从 \ 到」定位矩阵表本体，7 行 × 7 列、hover 十字高亮 13 格
 await page.goto(`${BASE}docs/concepts`, { waitUntil: "networkidle0" });
@@ -64,7 +66,7 @@ const matrix = await page.evaluate((sel) => {
   return { rows, cols };
 }, MATRIX_SEL);
 const T = "#atb-matrix";
-await page.evaluate((t) => document.querySelector(t).scrollIntoView({ block: "center" }), T);
+await page.evaluate((t) => document.querySelector(t).scrollIntoView({ block: "center", behavior: "instant" }), T);
 await sleep(400);
 const hl = await page.evaluate((t) => document.querySelectorAll(`${t} td.bg-arc-faint`).length, T);
 let crossCount = hl;
@@ -78,22 +80,22 @@ if (crossCount === 0) {
 ok("matrix-7x7", matrix.rows === 7 && matrix.cols === 7, `${matrix.rows}x${matrix.cols}`);
 ok("matrix-hover-cross-13", crossCount === 13, `lit=${crossCount}`);
 
-// 5) 工具表：全集 26 口径、过滤命中、beta.6 未含工具不出现
+// 5) 工具表：全集 28 口径、过滤命中、beta.7 新增工具必须出现
 await page.goto(`${BASE}docs/agent`, { waitUntil: "networkidle0" });
 await sleep(700);
-const toolsAll = await page.evaluate(() => document.body.textContent.includes("tools/list 全集 26 工具"));
-ok("toolcount-26-caliber", toolsAll);
-const noBeta7 = await page.evaluate(
-  () => !document.body.textContent.includes("update_task") && !document.body.textContent.includes("update_skill"),
+const toolsAll = await page.evaluate(() => document.body.textContent.includes("tools/list 全集 28 工具"));
+ok("toolcount-28-caliber", toolsAll);
+const beta7Tools = await page.evaluate(
+  () => document.body.textContent.includes("update_task") && document.body.textContent.includes("update_skill"),
 );
-ok("toolcount-no-post-beta6", noBeta7);
+ok("toolcount-beta7-tools-present", beta7Tools);
 await page.type('input[aria-label="过滤 MCP 工具"]', "拆解");
 await sleep(400);
 const filtered = await page.evaluate(() => {
-  const m = document.body.textContent.match(/命中 (\d+) \/ 26/);
+  const m = document.body.textContent.match(/命中 (\d+) \/ 28/);
   return m ? Number(m[1]) : -1;
 });
-ok("tool-filter-hit", filtered > 0 && filtered < 26, `命中 ${filtered}`);
+ok("tool-filter-hit", filtered > 0 && filtered < 28, `命中 ${filtered}`);
 await page.evaluate(() => {
   const input = document.querySelector('input[aria-label="过滤 MCP 工具"]');
   const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
@@ -105,7 +107,7 @@ const emptyState = await page.evaluate(() => document.body.textContent.includes(
 ok("tool-filter-empty-state", emptyState);
 await page.evaluate(() => document.querySelector('input[aria-label="过滤 MCP 工具"]').closest("label").querySelector("button").click());
 await sleep(300);
-const cleared = await page.evaluate(() => document.body.textContent.includes("tools/list 全集 26 工具"));
+const cleared = await page.evaluate(() => document.body.textContent.includes("tools/list 全集 28 工具"));
 ok("tool-filter-clear", cleared);
 
 // 6) reduced-motion：页切换瞬切（400ms 内内容到位、切换后无残留动画）
@@ -115,7 +117,7 @@ await rm.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce"
 await rm.goto(`${BASE}docs/install`, { waitUntil: "networkidle0" });
 await sleep(500);
 await rm.evaluate(() => {
-  [...document.querySelectorAll("aside nav a")].find((a) => a.getAttribute("href") === "/docs/skills").click();
+  [...document.querySelectorAll("aside nav a")].find((a) => (a.getAttribute("href") ?? "").endsWith("/docs/skills")).click();
 });
 let instant = true;
 try {
@@ -144,14 +146,17 @@ await page.evaluate(() => {
 await sleep(600);
 const drawer = await page.evaluate(() => {
   const btn = [...document.querySelectorAll("main button[aria-expanded]")][0];
-  const links = [...document.querySelectorAll("main a[href^='/docs']")];
+  const links = [...document.querySelectorAll("main a")].filter((a) => /\/docs(\/|$)/.test(a.getAttribute("href") ?? ""));
   return { open: btn.getAttribute("aria-expanded") === "true", links: links.length };
 });
 ok("mobile-drawer-open", drawer.open && drawer.links >= 9, `links=${drawer.links}`);
 await page.evaluate(() => {
-  [...document.querySelectorAll("main a[href^='/docs']")].find((a) => a.getAttribute("href") === "/docs/board").click();
+  [...document.querySelectorAll("main a")]
+    .filter((a) => /\/docs(\/|$)/.test(a.getAttribute("href") ?? ""))
+    .find((a) => (a.getAttribute("href") ?? "").endsWith("/docs/board"))
+    .click();
 });
-await page.waitForFunction(() => location.pathname === "/docs/board", { timeout: 5000 });
+await page.waitForFunction(() => location.pathname.endsWith("/docs/board"), { timeout: 5000 });
 await sleep(700);
 const closed = await page.evaluate(() => [...document.querySelectorAll("main button[aria-expanded]")][0]?.getAttribute("aria-expanded"));
 ok("mobile-drawer-navigate-and-close", closed === "false");
