@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * 文档区走查截图（设计稿 §7）：10 页 × 三档视口抽样 + 矩阵 hover + 375 抽屉展开。
+ * 文档区走查截图（设计稿 §7）：11 页 × 三档视口抽样 + 矩阵 hover + 375 抽屉展开。
  * 用法：node scripts/shots-docs.mjs [outDir]（默认 /tmp/jarvis-shots）
  */
 import { mkdirSync } from "node:fs";
@@ -9,8 +9,8 @@ import puppeteer from "puppeteer-core";
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const BASE = process.env.ATB_SITE_URL ?? "http://localhost:4390/jarvis-site/";
 const OUT = process.argv[2] ?? "/tmp/jarvis-shots";
-const PAGES = ["", "install", "concepts", "board", "review", "skills", "org", "agent", "data", "changelog"];
-const ALL_VP_PAGES = ["", "concepts", "agent", "data"]; // 全档复验页：Hub / 矩阵招牌件 / 最长工具页 / 表格页
+const PAGES = ["", "install", "concepts", "board", "review", "interaction", "skills", "org", "agent", "data", "changelog"];
+const ALL_VP_PAGES = ["", "concepts", "interaction", "agent", "data"]; // 全档复验页：Hub / 矩阵招牌件 / 交互页 / 最长工具页 / 表格页
 const VIEWPORTS = [
   { name: "w1280", width: 1280, height: 900 },
   { name: "w960", width: 960, height: 1200 },

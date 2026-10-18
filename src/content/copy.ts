@@ -13,7 +13,7 @@ export const LINKS = {
   repo: "https://github.com/xueshuaihui/agent-task-board",
 };
 
-/** 版本徽章：版本号唯一事实源是 docs-nav 的 RELEASE_BADGE（来源：v0.0.4-beta.8 发布记录，2026-09-28） */
+/** 版本徽章：版本号唯一事实源是 docs-nav 的 RELEASE_BADGE（来源：v0.0.4-beta.12 发布记录，2026-10-18） */
 export const LATEST_BADGE = `${RELEASE_BADGE} · macOS + Windows x64 · prerelease 通道`;
 
 export const NAV_SECTIONS = [
@@ -153,8 +153,8 @@ export const MODULES = [
   {
     key: "agent",
     title: "Agent 接入",
-    body: "设置里签发 Agent Token，配上 MCP 地址，你的 AI 助手即刻上岗：28 个 MCP 工具覆盖认领、心跳、回写、编辑、拆解全流程。",
-    bullets: ["MCP 28 工具 + REST 通道", "Token 分组：UI 与 Agent 互不可越", "唤醒词「贾维斯，…」或定时认领"],
+    body: "设置里签发 Agent Token，配上 MCP 地址，你的 AI 助手即刻上岗：29 个 MCP 工具覆盖认领、心跳、回写、编辑、技能、拆解全流程。",
+    bullets: ["MCP 29 工具 + REST 通道", "Token 分组：UI 与 Agent 互不可越", "唤醒词「贾维斯，…」或定时认领"],
   },
   {
     key: "settings",

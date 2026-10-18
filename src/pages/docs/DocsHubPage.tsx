@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { ArrowRight, Bot, Boxes, ClipboardCheck, Columns3, Download, FolderTree, History, ShieldCheck, Sparkles } from "lucide-react";
+import { ArrowRight, Bot, Boxes, ClipboardCheck, Columns3, Download, FolderTree, History, MessagesSquare, ShieldCheck, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { DOC_PAGES, HUB_PATHS } from "../../content/docs-nav";
 import { itemVariants, listVariants, rise } from "../../lib/motion";
@@ -11,6 +11,7 @@ const ICONS = {
   concepts: Boxes,
   board: Columns3,
   review: ClipboardCheck,
+  interaction: MessagesSquare,
   skills: Sparkles,
   org: FolderTree,
   agent: Bot,
@@ -24,7 +25,7 @@ export default function DocsHubPage() {
     <div>
       <PanelTitle kicker="FIELD MANUAL" title="贾维斯操作手册" />
       <p className="max-w-2xl text-sm leading-7 text-mid">
-        从装好第一台电脑，到让 Agent 领走第一块任务——九章手册覆盖安装、看板、审核、技能、协作链路、Agent 接入与数据安全。
+        从装好第一台电脑，到让 Agent 领走第一块任务——十章手册覆盖安装、看板、审核、交互方式、技能、协作链路、Agent 接入与数据安全。
         全部内容与当前发布版本逐项对账，每页底部附出处。
       </p>
 

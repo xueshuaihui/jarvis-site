@@ -10,6 +10,7 @@ const InstallPage = lazy(() => import("./pages/docs/InstallPage"));
 const ConceptsPage = lazy(() => import("./pages/docs/ConceptsPage"));
 const BoardPage = lazy(() => import("./pages/docs/BoardPage"));
 const ReviewPage = lazy(() => import("./pages/docs/ReviewPage"));
+const InteractionPage = lazy(() => import("./pages/docs/InteractionPage"));
 const SkillsPage = lazy(() => import("./pages/docs/SkillsPage"));
 const OrgPage = lazy(() => import("./pages/docs/OrgPage"));
 const AgentPage = lazy(() => import("./pages/docs/AgentPage"));
@@ -35,6 +36,7 @@ export default function App() {
             <Route path="concepts" element={<ConceptsPage />} />
             <Route path="board" element={<BoardPage />} />
             <Route path="review" element={<ReviewPage />} />
+            <Route path="interaction" element={<InteractionPage />} />
             <Route path="skills" element={<SkillsPage />} />
             <Route path="org" element={<OrgPage />} />
             <Route path="agent" element={<AgentPage />} />

@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { motion } from "motion/react";
 import { DOC_PAGES } from "../../content/docs-nav";
 
-/** 文档树：10 项（文档首页 + 9 内容页），激活项金色竖条 layoutId 滑动 */
+/** 文档树：11 项（文档首页 + 10 内容页），激活项金色竖条 layoutId 滑动 */
 export function DocsNavList({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <nav aria-label="文档导航" className="space-y-0.5">

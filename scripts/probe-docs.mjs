@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** 文档区交互回归探针（设计稿 §7）：路由渲染 / 互链 / 矩阵 hover / 工具过滤 / 抽屉 / reduced-motion / 28 工具口径 */
+/** 文档区交互回归探针（设计稿 §7）：路由渲染 / 互链 / 矩阵 hover / 工具过滤 / 抽屉 / reduced-motion / 29 工具口径 */
 import puppeteer from "puppeteer-core";
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -14,9 +14,9 @@ await page.setViewport({ width: 1280, height: 900 });
 const errors = [];
 page.on("pageerror", (e) => errors.push(String(e)));
 
-const SLUGS = ["", "install", "concepts", "board", "review", "skills", "org", "agent", "data", "changelog"];
+const SLUGS = ["", "install", "concepts", "board", "review", "interaction", "skills", "org", "agent", "data", "changelog"];
 
-// 1) 10 条路由深链渲染：h2 页题存在、文档壳（Nav + 口径行）在位
+// 1) 11 条路由深链渲染：h2 页题存在、文档壳（Nav + 口径行）在位
 for (const s of SLUGS) {
   await page.goto(`${BASE}docs/${s}`, { waitUntil: "networkidle0" });
   await sleep(700);
@@ -80,22 +80,22 @@ if (crossCount === 0) {
 ok("matrix-7x7", matrix.rows === 7 && matrix.cols === 7, `${matrix.rows}x${matrix.cols}`);
 ok("matrix-hover-cross-13", crossCount === 13, `lit=${crossCount}`);
 
-// 5) 工具表：全集 28 口径、过滤命中、beta.7 新增工具必须出现
+// 5) 工具表：全集 29 口径、过滤命中、beta.11 新增工具必须出现
 await page.goto(`${BASE}docs/agent`, { waitUntil: "networkidle0" });
 await sleep(700);
-const toolsAll = await page.evaluate(() => document.body.textContent.includes("tools/list 全集 28 工具"));
-ok("toolcount-28-caliber", toolsAll);
-const beta7Tools = await page.evaluate(
-  () => document.body.textContent.includes("update_task") && document.body.textContent.includes("update_skill"),
+const toolsAll = await page.evaluate(() => document.body.textContent.includes("tools/list 全集 29 工具"));
+ok("toolcount-29-caliber", toolsAll);
+const beta11Tools = await page.evaluate(
+  () => document.body.textContent.includes("create_skill") && document.body.textContent.includes("update_skill"),
 );
-ok("toolcount-beta7-tools-present", beta7Tools);
+ok("toolcount-beta11-tools-present", beta11Tools);
 await page.type('input[aria-label="过滤 MCP 工具"]', "拆解");
 await sleep(400);
 const filtered = await page.evaluate(() => {
-  const m = document.body.textContent.match(/命中 (\d+) \/ 28/);
+  const m = document.body.textContent.match(/命中 (\d+) \/ 29/);
   return m ? Number(m[1]) : -1;
 });
-ok("tool-filter-hit", filtered > 0 && filtered < 28, `命中 ${filtered}`);
+ok("tool-filter-hit", filtered > 0 && filtered < 29, `命中 ${filtered}`);
 await page.evaluate(() => {
   const input = document.querySelector('input[aria-label="过滤 MCP 工具"]');
   const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
@@ -107,7 +107,7 @@ const emptyState = await page.evaluate(() => document.body.textContent.includes(
 ok("tool-filter-empty-state", emptyState);
 await page.evaluate(() => document.querySelector('input[aria-label="过滤 MCP 工具"]').closest("label").querySelector("button").click());
 await sleep(300);
-const cleared = await page.evaluate(() => document.body.textContent.includes("tools/list 全集 28 工具"));
+const cleared = await page.evaluate(() => document.body.textContent.includes("tools/list 全集 29 工具"));
 ok("tool-filter-clear", cleared);
 
 // 6) reduced-motion：页切换瞬切（400ms 内内容到位、切换后无残留动画）

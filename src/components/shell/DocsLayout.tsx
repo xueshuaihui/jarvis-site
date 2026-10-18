@@ -3,7 +3,8 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { BookOpen, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { DOC_PAGES, RELEASE_BADGE } from "../../content/docs-nav";
+import { RELEASE_BADGE } from "../../content/docs-nav";
+import { DOC_DETAILS } from "../../content/manual";
 import { easeExit, easeOverlay } from "../../lib/motion";
 import { Nav } from "./Nav";
 import { Footer } from "./Footer";
@@ -21,8 +22,35 @@ export default function DocsLayout() {
   const reduce = useReducedMotion();
   const slug = pathname.startsWith("/docs/") ? pathname.slice("/docs/".length) : "";
 
+  /**
+   * 路由切换后的落点：无 hash 回顶；有 hash 滚到对应小节。
+   *
+   * WHY 要重试：文档页是懒加载的，`/docs/skills#discovery` 这类跨页深链在
+   * 目标元素挂载之前就查不到节点，浏览器也不会替 pushState 滚动——不补这一段，
+   * 从交互页点「Agent 怎么找到技能」只会落到技能页顶部。页切换有出/入过渡，
+   * 所以按 80ms 重试到目标出现为止（最多 ~1.6s，足够 chunk 到位）。
+   */
   useEffect(() => {
-    if (!hash) window.scrollTo({ top: 0, behavior: "auto" });
+    if (!hash) {
+      window.scrollTo({ top: 0, behavior: "auto" });
+      return;
+    }
+    const id = hash.replace(/^#/, "");
+    let tries = 0;
+    let timer = 0;
+    const tick = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ block: "start", behavior: "auto" });
+        return;
+      }
+      if (tries < 20) {
+        tries += 1;
+        timer = window.setTimeout(tick, 80);
+      }
+    };
+    tick();
+    return () => window.clearTimeout(timer);
   }, [pathname, hash]);
 
   return (
@@ -80,14 +108,14 @@ export default function DocsLayout() {
               >
                 <Outlet />
               </Suspense>
-              {slug && <BasisLine text={DOC_PAGES.find((p) => p.slug === slug)?.basis ?? ""} />}
+              {slug && <BasisLine text={DOC_DETAILS[slug]?.basis ?? ""} />}
               {slug && <DocPager slug={slug} />}
               <p className="mt-6 font-mono text-[11px] text-lo">
                 文档口径对齐{" "}
                 <Link to="/docs/changelog" className="text-arc/70 transition-colors duration-140 hover:text-arc">
                   {RELEASE_BADGE}
                 </Link>{" "}
-                · 2026-09
+                · 2026-10
               </p>
             </motion.div>
           </AnimatePresence>

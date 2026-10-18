@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion } from "motion/react";
-import { DOC_PAGES } from "../../content/docs-nav";
+import { DOC_DETAILS } from "../../content/manual";
 
 /** 右栏本页 TOC（xl 显示）：IO 高亮当前小节，layoutId 圆点滑动 */
 export function TocRail({ slug }: { slug: string }) {
-  const page = DOC_PAGES.find((p) => p.slug === slug);
+  const page = DOC_DETAILS[slug];
   const [active, setActive] = useState("");
 
   useEffect(() => {

@@ -3,20 +3,149 @@
    所有页面结构与数字事实集中于此，页组件不写字面数字。
    出处：agent-task-board《系统操作使用手册》§n（下称 M）、
    《任务创建模版（Agent 协助）》（T）、发版记录/tag 注记（R）。
-   事实口径锁 v0.0.4-beta.8；update_task/update_skill 已随 beta.7 发布，工具面必须收录。
+   事实口径锁 v0.0.4-beta.12；create_skill 随 beta.11 发布（28→29 工具），
+   技能发现面（list/get/search）随 beta.12 发布，见 /docs/skills#discovery。
    ============================================================ */
+
+import type { DocToc } from './docs-nav';
+
+/**
+ * 每页的小节锚点与依据行。
+ *
+ * 为什么不放 docs-nav：那两份数据只在文档页里用，而 docs-nav 会随首页进首包。
+ * 挪到这里后，它们跟着文档区 chunk 懒加载——首包预算（≤125KB gzip）留给首页自己。
+ */
+export const DOC_DETAILS: Record<string, { basis: string; toc: DocToc[] }> = {
+  install: {
+    basis: "依据：系统操作使用手册 §2",
+    toc: [
+      { id: "sys-req", label: "系统与分发形态" },
+      { id: "install-steps", label: "安装四步" },
+      { id: "gatekeeper", label: "首次启动被拦截" },
+      { id: "upgrade", label: "升级与旧数据" },
+      { id: "ports", label: "端口与地址" },
+    ],
+  },
+  concepts: {
+    basis: "依据：系统操作使用手册 §3",
+    toc: [
+      { id: "states", label: "任务与七状态" },
+      { id: "matrix", label: "状态流转矩阵" },
+      { id: "review-contract", label: "产出物与强制审核" },
+      { id: "tokens", label: "鉴权：UI 与 Agent 两面" },
+      { id: "lease", label: "租约与心跳" },
+      { id: "custom-fields", label: "自定义字段" },
+      { id: "settings-keys", label: "设置键总表" },
+    ],
+  },
+  board: {
+    basis: "依据：系统操作使用手册 §4.1–4.4、§4.6",
+    toc: [
+      { id: "nav-map", label: "界面导航" },
+      { id: "views", label: "三视图与分组呈现" },
+      { id: "drag-keys", label: "拖拽与键盘操作" },
+      { id: "create", label: "创建任务" },
+      { id: "detail", label: "任务详情七 Tab" },
+      { id: "filters", label: "筛选、搜索与排序" },
+    ],
+  },
+  review: {
+    basis: "依据：系统操作使用手册 §4.5、§4.8",
+    toc: [
+      { id: "entry", label: "三种进入方式" },
+      { id: "form", label: "审核表单解剖" },
+      { id: "queue", label: "审核队列页" },
+      { id: "notify", label: "通知中心" },
+    ],
+  },
+  interaction: {
+    basis: "依据：系统操作使用手册 §4.1–4.5、§4.11–4.12、§5.3；MCP instructions",
+    toc: [
+      { id: "surfaces", label: "三条交互通道" },
+      { id: "talk", label: "对话通道与唤醒词" },
+      { id: "scripts", label: "七个常用剧本" },
+      { id: "skill-talk", label: "剧本详解：用技能" },
+      { id: "confirm", label: "确认、撤销与审核闸门" },
+      { id: "signals", label: "读懂状态信号" },
+      { id: "keys", label: "手势与键盘" },
+      { id: "rules", label: "跟 Agent 说话的八条" },
+    ],
+  },
+  skills: {
+    basis: "依据：系统操作使用手册 §3.8、§4.10；MCP 技能工具与 instructions",
+    toc: [
+      { id: "sources", label: "技能的三个来源" },
+      { id: "anatomy", label: "类型与块模型" },
+      { id: "editor", label: "编辑器与画布" },
+      { id: "versioning", label: "发布、版本与测试" },
+      { id: "discovery", label: "Agent 怎么找到技能" },
+      { id: "import", label: "导入与导出" },
+      { id: "binding", label: "技能绑定任务" },
+    ],
+  },
+  org: {
+    basis: "依据：系统操作使用手册 §3.7、§4.7、§4.9、§4.11、§4.12",
+    toc: [
+      { id: "group-model", label: "分组三层模型" },
+      { id: "group-page", label: "分组页与泳道操作" },
+      { id: "settings", label: "设置中心九 Tab" },
+      { id: "breakdown", label: "需求拆解链路" },
+      { id: "creation", label: "会话直建三模式" },
+    ],
+  },
+  agent: {
+    basis: "依据：系统操作使用手册 §5；任务创建模版（Agent 协助）",
+    toc: [
+      { id: "token", label: "第一步：签发 Agent Token" },
+      { id: "endpoint", label: "MCP 端点与配置" },
+      { id: "wake", label: "贾维斯唤醒词" },
+      { id: "loop", label: "执行闭环七步" },
+      { id: "tools", label: "MCP 工具参考（29）" },
+      { id: "rest", label: "REST 等价接口" },
+      { id: "template", label: "任务创建模版速查" },
+      { id: "cursor", label: "Cursor 定时调度" },
+    ],
+  },
+  data: {
+    basis: "依据：系统操作使用手册 §6、§7",
+    toc: [
+      { id: "boundary", label: "本地优先的网络边界" },
+      { id: "backup", label: "备份与恢复" },
+      { id: "portable", label: "数据导入导出" },
+      { id: "audit", label: "审计日志" },
+      { id: "dir", label: "数据目录与迁移" },
+      { id: "trouble", label: "故障排查" },
+      { id: "codes", label: "错误码速查" },
+    ],
+  },
+  changelog: {
+    basis: "依据：仓库 tag 注记与发版记录",
+    toc: [
+      { id: "log", label: "发布历史" },
+      { id: "assets", label: "产物与校验" },
+    ],
+  },
+};
 
 /* ---------------- 通用事实数字 ---------------- */
 
 export const FACTS = {
   mcpPort: 7788,
   mcpEndpoint: "http://127.0.0.1:7788/mcp",
-  toolCount: 28,
+  toolCount: 29,
   defaultSkills: 125,
   skillTypes: 7,
   blockKinds: 15,
   skillCategories: 16,
   skillCategoryGroups: 7,
+  /** 技能候选的默认条数上限（search_skills 的 limit 默认值） */
+  skillSearchLimit: 8,
+  /** 目录默认每页条数（list_skills 的 limit 默认值，上限 200） */
+  skillListPage: 50,
+  /** 候选里描述截断长度（服务端 BRIEF_DESCRIPTION_CLIP） */
+  skillBriefClip: 120,
+  /** 分差阈值：top1-top2 小于它即 ambiguous=true */
+  skillAmbiguousGap: 15,
   leaseTtlDefault: 30,
   heartbeatDefault: 300,
   artifactMaxMb: 20,
@@ -183,7 +312,7 @@ export const SETTINGS_KEYS: { key: string; range: string; def: string; hot: bool
   { key: "review_reuse_last_opinion", range: "bool", def: "true", hot: true, note: "审核表单预填上次意见" },
   { key: "agent_creation_mode", range: "direct/light/silent", def: "light", hot: true, note: "Agent 会话直建确认模式" },
   { key: "light_confirm_timeout_seconds", range: "1–300", def: "30", hot: true },
-  { key: "mcp_wake_mode", range: "single/continuous", def: "single", hot: true, note: "唤醒模式；改动需 MCP 客户端重连生效" },
+  { key: "mcp_wake_mode", range: "single/continuous", def: "single", hot: true, note: "唤醒模式；自下一次工具响应起生效（instructions 文本随客户端重连刷新）" },
 ];
 
 export const CUSTOM_FIELD_RULES = [
@@ -306,6 +435,86 @@ export const SKILL_PUBLISH_CHECKS = [
 
 export const SKILL_DETAIL_TABS = ["概览（内容块预览）", "版本（回滚到此版）", "测试（输入→运行→logs/output）", "MCP 依赖（配置片段复制）", "绑定任务"];
 
+/* 技能发现面：Agent 侧「一句话 → 候选 → 你选 → 正文」的固定路径。
+   口径来源：apps/api/src/skills/skills.service.ts（scoreOne / searchBrief / findByName）
+   与 mcp.server.ts 的 instructions（把「候选多就让用户选」写成硬流程）。 */
+
+export const SKILL_DISCOVERY_STEPS = [
+  {
+    title: "说人话，不用背技能名",
+    body: "你说的「代码评审」直接进 search_skills(keyword=…)：服务端按名称/分类/标签/描述打分，近义词与错字靠字符相似度兜底，恒给候选而不是空数组。",
+  },
+  {
+    title: "看候选：名称 + 一句话描述",
+    body: `默认最多 ${FACTS.skillSearchLimit} 条，每条带 score 与 matched_on（命中在名称、分类、标签还是描述）；描述截到 ${FACTS.skillBriefClip} 字，只够判断「是不是它」。`,
+  },
+  {
+    title: "分不出来，就由你选",
+    body: `候选多于一条或 top1 与 top2 分差 < ${FACTS.skillAmbiguousGap} 时，返回体带 ambiguous=true 与一句 next，Agent 必须把候选列给你、等你点选，不自行挑定。`,
+  },
+  {
+    title: "选定后取正文",
+    body: "get_skill 支持 skill_id 或 skill_name（名称全等、大小写不敏感）：名称确定时一跳到位，不用先 search 再 get。同名多条回 candidates 让你再选一次。",
+  },
+];
+
+export const SKILL_MATCH_LADDER: { hit: string; score: string; note: string }[] = [
+  { hit: "名称全等", score: "100", note: "说对了名字，直接是它" },
+  { hit: "名称前缀 / 包含", score: "80 / 70", note: "「代码审」也能命中「代码审查」" },
+  { hit: "分类（叶子或一级词）", score: "50", note: "说「编码开发」能捞出这一类的技能" },
+  { hit: "标签全等", score: "45", note: "技能上挂的自由标签" },
+  { hit: "描述包含", score: "30", note: "命中正文说明里的词" },
+  { hit: "字符二元组相似度", score: "≤ 30", note: "Jaccard 相似度 ×30，阈值 0.15：兜住「评审 ↔ 审查」这类近义与错字" },
+];
+
+export const SKILL_BRIEF_FIELDS = [
+  "skill_id", "name", "description（≤120 字）", "type", "status", "category", "tags", "source", "readonly", "current_version", "updated_at",
+];
+
+export const SKILL_DISCOVERY_VOLUME: { call: string; before: string; after: string }[] = [
+  { call: "list_skills 全量目录", before: "≈ 1.0 MB（全字段，含正文 / 测试用例 / MCP 依赖）", after: "≈ 43 KB（只给目录，不含正文）" },
+  { call: "list_skills 默认一页（50 条）", before: "不支持分页", after: "≈ 17.6 KB" },
+  { call: "search_skills 候选（8 条）", before: "返回全量 + 全字段", after: "≈ 2.8 KB" },
+  { call: "拿正文", before: "search → get 两跳", after: "名称确定时 get_skill(skill_name=…) 一跳" },
+];
+
+export const SKILL_SEARCH_SAMPLE = `{
+  "items": [
+    {
+      "skill_id": "skl_9f2c…",
+      "name": "代码审查",
+      "description": "四步审查：意图对齐 → 边界检查 → 风险扫描 → 结论",
+      "type": "workflow",
+      "status": "PUBLISHED",
+      "category": "编码开发",
+      "tags": ["质量"],
+      "source": "default",
+      "readonly": true,
+      "score": 70,
+      "matched_on": "name"
+    },
+    {
+      "skill_id": "skl_41ab…",
+      "name": "代码评审清单",
+      "description": "按清单逐项过一遍改动，输出可勾选的结论",
+      "score": 34,
+      "matched_on": "similarity"
+    }
+  ],
+  "total": 2,
+  "returned": 2,
+  "ambiguous": true,
+  "next": "候选分数接近（top1=70，ambiguous=true）：把前 2 条的名称 + 一句话描述列给用户，让用户选一个，不要自行挑定；选定后 get_skill(skill_id=...) 取正文"
+}`;
+
+export const SKILL_NAMING_TIPS = [
+  "名称用业务词，别用内部代号：候选就是按名称打分的，「CR-v3」谁也搜不到。",
+  "描述的前 120 字要能独立说清「这技能干什么」——候选里只展示这一段。",
+  "近义写法可以写进描述（如「代码审查」的描述里带「代码评审」），相似度与描述命中都会因此更容易捞到它。",
+  "重名不拦：身份由 skill_id 决定；但同名会让 Agent 每次都回来问你选哪个，能区分就别撞名。",
+];
+
+
 /* ---------------- /docs/org ---------------- */
 
 export const GROUP_LAYERS = [
@@ -353,6 +562,139 @@ export const CREATION_NOTES = [
   "模式优先级：请求参数 ＞ 设置 agent_creation_mode ＞ 默认 light",
   "撤销守卫：仅 origin=agent 且未被领取的任务可撤；撤销即删",
   "留痕：agent_sessions 按会话 upsert，task_creation_logs 记创建/取消/超时",
+];
+
+/* ---------------- /docs/interaction ---------------- */
+
+export const INTERACTION_SURFACES = [
+  {
+    name: "点选",
+    start: "拖卡片、点列头、开详情抽屉",
+    control: "你",
+    fit: "精确改状态、整理排序、看 diff 之后拍板",
+  },
+  {
+    name: "对话",
+    start: "「贾维斯，…」一句话",
+    control: "你发起，Agent 执行",
+    fit: "建任务、拆需求、查状态、按技能办事",
+  },
+  {
+    name: "程序化",
+    start: "Agent 或脚本直接调工具",
+    control: "你的 Agent / 调度器",
+    fit: "无人值守、批量回写、CI 里跑",
+  },
+];
+
+/** 常用对话剧本：场景 / 可以这样说 / 系统会做什么 / 你会看到什么 */
+export const INTERACTION_SCRIPTS: { scene: string; say: string; does: string; see: string }[] = [
+  {
+    scene: "建一个任务",
+    say: "「贾维斯，创建一个任务：给支付回调补日志，优先级高」",
+    does: "board.create_task，按当前创建模式走（默认轻确认）",
+    see: "右下角浮层卡片「取消 / 编辑 / 创建」+ 倒计时条；创建后落需求池",
+  },
+  {
+    scene: "拆一段需求",
+    say: "「贾维斯，把『会员体系改版』这段需求拆成任务」",
+    does: "begin_breakdown → report_progress → report_task_draft → finish_breakdown",
+    see: "看板「待确认」覆盖层：草案卡片流 + 草案依赖图，可最小编辑后确认",
+  },
+  {
+    scene: "照技能办事",
+    say: "「贾维斯，用代码评审这个技能过一遍这个 MR」",
+    does: "search_skills 拿候选 → 你选定 → get_skill 取正文 → 按技能流程执行",
+    see: "候选清单（名称 + 一句话描述）；分不出来时它会停下来问你选哪个",
+  },
+  {
+    scene: "改已有任务",
+    say: "「把 T-102 的优先级改成紧急，再加个『线上』标签」",
+    does: "update_task，只提交变化过的字段（BACKLOG / READY / BLOCKED / FAILED 免租约）",
+    see: "卡片优先级角标与标签立即更新；执行中的任务会被拒改",
+  },
+  {
+    scene: "看现在的进度",
+    say: "「贾维斯，现在有几个任务在跑」",
+    does: "list_ready_tasks / get_task 读一遍",
+    see: "顶栏「执行中 N · 最近活动」与任务详情的「执行」Tab（Run、日志、产出物）",
+  },
+  {
+    scene: "遇到人工块",
+    say: "（Agent 主动说）「这一步需要你线下审批，我先挂起」",
+    does: "block_task 上报 BLOCKED，等你处理",
+    see: "卡片落「人工阻塞」并给指引；你处理完把它拖回「待执行」",
+  },
+  {
+    scene: "被驳回后重跑",
+    say: "「按审核意见再改一版」",
+    does: "get_review_feedback 读回上次审核意见，改完再 complete",
+    see: "审核意见原文 + 新一轮 Run 与产出物，旧记录不覆盖",
+  },
+];
+
+/** 界面上会亮的状态信号：在哪 / 怎么读 / 能做什么 */
+export const FEEDBACK_SIGNALS: { signal: string; where: string; read: string; act: string }[] = [
+  {
+    signal: "「实时连接」绿点",
+    where: "顶栏右侧",
+    read: "WebSocket 已连上：任务、通知的变化会立即推到界面",
+    act: "无需操作；点它没有语义，所以它不是按钮",
+  },
+  {
+    signal: "「重连中」黄点 / 「已断开」红点 / 「连接中」灰点",
+    where: "同上",
+    read: "实时通道断了或正在握手；数据不会自己刷新",
+    act: "整枚可点，点一下立即重连（跳过退避等待）；连上后自动全量刷新",
+  },
+  {
+    signal: "断线横幅",
+    where: "页面顶部",
+    read: "与角标同一份文案，只在断开/重连态出现——不出现就代表连着",
+    act: "等它自己退，或去点顶栏角标立刻重试",
+  },
+  {
+    signal: "「执行中 N · 最近活动 x 分钟前」",
+    where: "顶栏",
+    read: "Agent 是否还在干活；N=0 且 24 小时内没有任何活动时整条隐藏",
+    act: "想看细节就打开对应任务的「执行」Tab，看 Run 与日志",
+  },
+  {
+    signal: "铃铛角标",
+    where: "顶栏",
+    read: "未读通知数：待审核与 Agent 创建请求优先，其次是执行失败、租约过期、驳回、解除阻塞",
+    act: "点开通知中心逐条处理；审核完角标才减",
+  },
+  {
+    signal: "卡片状态色",
+    where: "看板",
+    read: "七状态：需求池 / 待执行 / 执行中 / 人工阻塞 / 待审核 / 已完成 / 异常",
+    act: "按流转矩阵拖拽；「人工阻塞」是在等你，不是出错",
+  },
+  {
+    signal: "轻确认倒计时条",
+    where: "右下角浮层",
+    read: "倒计时归零 = 按「不创建」处理，卡片直接消失",
+    act: "要建就点「创建」，要改就点「编辑」，别让它自己走完",
+  },
+  {
+    signal: "审核表单里的 diff 与产出物",
+    where: "审核抽屉 / 审核页",
+    read: "这是 Agent 交付的全部证据：diff、文件、日志、链接",
+    act: "看完再点通过或驳回；驳回必须选退回目标并写三条意见",
+  },
+];
+
+/** 跟 Agent 说话的八条（都是踩过的坑，不是客套话） */
+export const TALK_RULES = [
+  "一次说一件事：唤醒一次办一件事，连续模式下也要把边界说清，别把三件事塞进一句话。",
+  "给验收标准，不给动作指令：说「首页 LCP 压到 2 秒内」比说「优化一下」有用一个量级。",
+  "用业务词，不用技能 id：技能名不必记，Agent 会先搜候选再让你选。",
+  "要产出物：diff、截图、日志、链接——审核看的就是产出物，没有产出的「做完了」等于没做。",
+  "优先级 0 只给真阻塞：它抢的是认领顺序，不是视觉效果。",
+  "被驳回就贴审核意见（或让 Agent 读 get_review_feedback），别新建一张卡重来——历史会断。",
+  "连续模式记得说「退出贾维斯」：否则后面的闲聊也会被当作看板操作。",
+  "Agent 报「人工阻塞」时先处理再拖回「待执行」：停在阻塞列里，它永远不会自己继续。",
 ];
 
 /* ---------------- /docs/agent ---------------- */
@@ -406,9 +748,10 @@ export const MCP_TOOL_GROUPS: { title: string; note: string; tools: McpTool[] }[
     tools: [
       { name: "block_task", what: "人工块上报 → BLOCKED（与 REST 双入口）", rest: "POST /api/v1/tasks/:id/blocked" },
       { name: "wait_for_resume", what: "阻塞等待人工解除 BLOCKED", rest: null },
-      { name: "list_skills", what: "技能列表（只读）", rest: "GET /api/v1/skills" },
-      { name: "get_skill", what: "技能详情与正文", rest: "GET /api/v1/skills/:id" },
-      { name: "search_skills", what: "技能检索", rest: null },
+      { name: "list_skills", what: "技能目录（只读）：只回名称/描述≤120 字/分类/标签等字段，**不含正文**；limit 默认 50、上限 200，可翻页", rest: "GET /api/v1/skills" },
+      { name: "search_skills", what: "按你的说法找候选（只读）：打分排序、近义兜底、恒给候选；返回 score / matched_on / ambiguous / next，候选多时列给用户选", rest: null },
+      { name: "get_skill", what: "取技能正文（含版本历史与 MCP 依赖）：skill_id 或 skill_name 二选一；同名多条回 candidates 让用户选", rest: "GET /api/v1/skills/:id" },
+      { name: "create_skill", what: "新建技能：与 UI 的 POST /skills 同一份落库（DRAFT + v0.1.0 + 初始版本快照，source=custom）；status 不可传，发布仍由人走版本快照", rest: "POST /api/v1/skills" },
       { name: "update_skill", what: "全字段 PATCH 编辑技能（内置默认技能只读，回 SKILL_READONLY）；content/tags/test_cases 整体覆盖", rest: "PATCH /api/v1/skills/:id" },
       { name: "check_mcp_policy", what: "MCP 依赖策略校验", rest: null },
       { name: "report_mcp_call", what: "MCP 调用审计上报", rest: null },
@@ -577,10 +920,56 @@ export const CHANGELOG: {
   current?: boolean;
 }[] = [
   {
+    version: "v0.0.4-beta.12",
+    date: "2026-10-18",
+    channel: "prerelease",
+    current: true,
+    headline: "技能发现面重做：目录不带正文、搜索给候选、按名取正文",
+    points: [
+      "list_skills 改精简目录：只回 skill_id / name / 一句话描述 / 类型 / 状态 / 分类 / 标签 / 来源，默认每页 50 条、上限 200，翻页靠 limit/offset；124 条内置技能实测 1,026,079B → 43,599B（23.5×）",
+      "search_skills 改「意图 → 候选打分」：名称全等 100 / 前缀 80 / 子串 70 / 分类 50 / 标签 45 / 描述 30，中文二元组相似度兜底近义词与错字（如「代码评审」命中「代码审查」）；恒给候选，返回项带 score 与 matched_on",
+      "search_skills 新增 ambiguous 硬信号：top1 与 top2 分差 < 15 即 true 并附 next，Agent 必须把候选列给用户选，不许自行挑定；默认返回 8 条，约 2.8KB",
+      "get_skill 支持 skill_name：名称全等、大小写不敏感，重名回 { ambiguous, candidates } 让用户再选一次；查无此名回 NOT_FOUND 并指路先 search_skills",
+      "MCP instructions 补技能发现流程（search 拿候选 → 多条或 ambiguous 列给用户选 → get_skill 取正文），工具名与入参形状不变，升级即生效",
+    ],
+  },
+  {
+    version: "v0.0.4-beta.11",
+    date: "2026-10-18",
+    channel: "prerelease",
+    headline: "Agent 能建技能了 + 实时连接状态常驻 + 内置技能时间修复",
+    points: [
+      "MCP 新增 create_skill，tools/list 由 28 升至 29：落库与 UI 的 POST /skills 同一份（DRAFT + v0.1.0 + 一条初始版本快照，source=custom）；status 不可传，发布仍由人在 UI 走版本快照",
+      "顶栏新增常驻「实时连接」角标（已连接 / 重连中 / 已断开 / 连接中），非连接态可点击立即重连；修掉旧连接迟到的关闭回调会把新连接状态清掉的问题",
+      "内置技能启动不再无条件刷新 updated_at：内容没变就一条 update 都不发，修掉技能列表永远「更新于 刚刚」",
+    ],
+  },
+  {
+    version: "v0.0.4-beta.10",
+    date: "2026-10-10",
+    channel: "prerelease",
+    headline: "移除「Agent 当审核方」整链，MCP 服务器更名",
+    points: [
+      "审核只保留「人工审核 / 不审核」两档：Agent 评审任务、审核批次、两枚审核工具与 REST 升级入口一并下线（数据迁移 0023）",
+      "MCP 服务器名改为 jarvis-workbench，与产品名对齐——客户端配置里的 name 字段跟随变化，url 不变",
+      "需求类型任务归档放宽：任意状态可归档，但须无活跃子任务",
+    ],
+  },
+  {
+    version: "v0.0.4-beta.9",
+    date: "2026-09-29",
+    channel: "prerelease",
+    headline: "报错全面细化 + 拆解会话弱引用",
+    points: [
+      "报错细化：数据层新增 7 个错误码，REST 与 MCP 共用一套解码器，界面不再把失败念成空",
+      "需求拆解会话对任务与分组改弱引用：删掉需求卡片不再报「本地服务内部错误」",
+      "审核记录补署名与默认审核方式设置，转人工审核入口补到位（该入口随 beta.10 的整链移除一并下线）",
+    ],
+  },
+  {
     version: "v0.0.4-beta.8",
     date: "2026-09-28",
     channel: "prerelease",
-    current: true,
     headline: "Windows x64 安装包首批上线",
     points: [
       "新增 Windows x64 NSIS 安装包（.exe）：未签名，首启按 SmartScreen 提示「更多信息 → 仍要运行」放行；per-user 安装、不需管理员权限",
