@@ -25,7 +25,7 @@ import { ToolRefTable } from "../../components/prose/ToolRefTable";
 
 const meta = docPage("agent")!;
 
-/** /docs/agent Agent 接入（手册 §5 + 任务创建模版）：28 工具参考表是本页招牌件 */
+/** /docs/agent Agent 接入（手册 §5 + 任务创建模版）：29 工具参考表是本页招牌件 */
 export default function AgentPage() {
   return (
     <div>
@@ -69,7 +69,8 @@ export default function AgentPage() {
           items={[
             <>切换入口：设置 → Token → 「贾维斯唤醒模式」（<Code>mcp_wake_mode</Code>）。</>,
             "连续对话模式下，说到「退出贾维斯」（或同义退出指令）才退出工作模式。",
-            "协议全文由服务端在 MCP 连接的 initialize 响应里整段下发，客户端 Agent 自动遵循、无需手工配置；改动在下一次连接（重连或新会话）生效。",
+            "协议全文由服务端在 MCP 连接的 initialize 响应里整段下发，客户端 Agent 自动遵循、无需手工配置；instructions 文本随客户端重连刷新，而每一轮工具返回都附一行「当前会话模式」，以那一行为准。",
+            <>说到哪一步、该给什么上下文，见 <Link to="/docs/interaction#talk" className="text-arc underline decoration-arc/40">交互方式 · 对话通道</Link>——那一页有七个可以照抄的说法。</>,
           ]}
         />
       </Section>
@@ -92,6 +93,14 @@ export default function AgentPage() {
           建议先调 <Code>get_vocabulary</Code> 一次拿全服务端词表，杜绝试错造数据。
         </P>
         <ToolRefTable />
+        <Callout tone="info" title="技能四工具的分工">
+          <p>
+            <Code>search_skills</Code> 给候选（打分 + <Code>ambiguous</Code> + <Code>next</Code>）、<Code>get_skill</Code> 取正文、
+            <Code>list_skills</Code> 只给目录、<Code>create_skill</Code> 新建（落库同 UI 的 <Code>POST /skills</Code>）。
+            候选多于一条时按 <Code>next</Code> 把候选列给用户选，别自己挑一个——完整流程与打分阶梯见
+            <Link to="/docs/skills#discovery" className="text-arc underline decoration-arc/40"> 技能工作台</Link>。
+          </p>
+        </Callout>
       </Section>
 
       <Section id="rest" title="REST 等价接口">

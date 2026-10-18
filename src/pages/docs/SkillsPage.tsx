@@ -3,15 +3,23 @@ import { docPage } from "../../content/docs-nav";
 import {
   FACTS,
   SKILL_BLOCKS,
+  SKILL_BRIEF_FIELDS,
   SKILL_DETAIL_TABS,
+  SKILL_DISCOVERY_STEPS,
+  SKILL_DISCOVERY_VOLUME,
   SKILL_EDITOR_MODES,
+  SKILL_MATCH_LADDER,
+  SKILL_NAMING_TIPS,
   SKILL_PUBLISH_CHECKS,
+  SKILL_SEARCH_SAMPLE,
   SKILL_SOURCES,
   SKILL_TYPES,
 } from "../../content/manual";
 import { PageHeader, Section, P, UL, Code } from "../../components/prose/primitives";
 import { ProseTable } from "../../components/prose/ProseTable";
 import { Callout } from "../../components/prose/Callout";
+import { CodeBlock } from "../../components/prose/CodeBlock";
+import { StepsBlock } from "../../components/prose/StepsBlock";
 
 const meta = docPage("skills")!;
 
@@ -72,6 +80,64 @@ export default function SkillsPage() {
         <P>详情抽屉五个 Tab：{SKILL_DETAIL_TABS.join(" / ")}。</P>
       </Section>
 
+      <Section id="discovery" title="Agent 怎么找到技能">
+        <P>
+          技能库有 {FACTS.defaultSkills} 条，名字不必记，也不需要回平台翻列表。Agent 侧是一条固定的四步路径——
+          服务端把「候选多于一条就让用户选」写进了 MCP instructions，不靠模型自觉。
+        </P>
+        <StepsBlock
+          items={SKILL_DISCOVERY_STEPS.map((s) => ({
+            title: s.title,
+            body: <p>{s.body}</p>,
+          }))}
+        />
+        <P>
+          <Code>search_skills</Code> 的打分阶梯（同一技能命中多个词项时取最高分）：
+        </P>
+        <ProseTable
+          head={["命中面", "分值", "说明"]}
+          rows={SKILL_MATCH_LADDER.map((r) => [
+            <strong key={r.hit} className="text-hi">
+              {r.hit}
+            </strong>,
+            r.score,
+            r.note,
+          ])}
+        />
+        <Callout tone="info" title="ambiguous 是契约，不是建议">
+          <p>
+            top1 与 top2 分差小于 {FACTS.skillAmbiguousGap} 时，返回体带 <Code>ambiguous: true</Code> 和一句
+            <Code>next</Code>。这不是提示词层面的「最好问一下」——Agent 必须把候选的名称 + 一句话描述列给你、
+            等你选，选定后才允许 <Code>get_skill</Code> 取正文。
+          </p>
+        </Callout>
+        <CodeBlock label="search_skills · 返回体（节选）" code={SKILL_SEARCH_SAMPLE} />
+        <P>
+          取正文有两条路：候选里带回来的 <Code>skill_id</Code>，或者直接给 <Code>skill_name</Code>（名称全等、大小写不敏感）。
+          同名多条回 <Code>candidates</Code> 让你再选一次；查无此名回 <Code>NOT_FOUND</Code>，并提示先搜。
+        </P>
+        <P>
+          <Code>list_skills</Code> 只负责「逛目录」：{SKILL_BRIEF_FIELDS.length} 个字段——{SKILL_BRIEF_FIELDS.join(" / ")}——
+          <strong className="text-hi">不含正文</strong>，默认每页 {FACTS.skillListPage} 条、上限 200。要正文必须走 <Code>get_skill</Code>。
+        </P>
+        <ProseTable
+          head={["调用", "改造前", "现在"]}
+          rows={SKILL_DISCOVERY_VOLUME.map((r) => [
+            <strong key={r.call} className="text-hi">
+              {r.call}
+            </strong>,
+            r.before,
+            r.after,
+          ])}
+        />
+        <p className="mt-2 font-mono text-[11px] leading-6 text-lo">
+          * 体积为 124 条内置技能的 JSON 字节实测；客户端另有一份 structuredContent 副本，量级同阶。
+        </p>
+        <Callout tone="warn" title="反过来要求你怎么写技能">
+          <UL items={SKILL_NAMING_TIPS} />
+        </Callout>
+      </Section>
+
       <Section id="import" title="导入与导出">
         <UL
           items={[
@@ -91,7 +157,12 @@ export default function SkillsPage() {
           ]}
         />
         <Callout tone="info" title="往下读">
-          <p>Agent 侧只读面三工具（list / get / search_skills）与技能在闭环里的用法，见 <Link to="/docs/agent" className="text-arc underline decoration-arc/40">Agent 接入 · 工具参考</Link>。</p>
+          <p>
+            Agent 侧技能四工具（list_skills / search_skills / get_skill / create_skill）的入参与等价 REST，见
+            <Link to="/docs/agent#tools" className="text-arc underline decoration-arc/40"> Agent 接入 · 工具参考</Link>；
+            对着 Agent 怎么把「用某某技能」说清楚，见
+            <Link to="/docs/interaction#skill-talk" className="text-arc underline decoration-arc/40"> 交互方式 · 剧本详解</Link>。
+          </p>
         </Callout>
       </Section>
     </div>
